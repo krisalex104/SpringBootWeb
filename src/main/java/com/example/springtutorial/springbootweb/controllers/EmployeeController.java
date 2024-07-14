@@ -2,15 +2,14 @@ package com.example.springtutorial.springbootweb.controllers;
 
 import com.example.springtutorial.springbootweb.dtos.EmployeeDto;
 import com.example.springtutorial.springbootweb.entities.EmployeeEntity;
+import com.example.springtutorial.springbootweb.exception.ResourceNotFoundException;
 import com.example.springtutorial.springbootweb.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping(path = "/employees")
@@ -33,7 +32,7 @@ public class EmployeeController {
         Optional<EmployeeDto> employeeDtoOptional = employeeService.getEmployeeById(id);
         return employeeDtoOptional
                 .map(employeeDto -> ResponseEntity.ok(employeeDto))
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(()-> new ResourceNotFoundException("Employee not found with id :"+id));
     }
 
     @RequestMapping
@@ -43,13 +42,13 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeDto> createNewEmployee(@RequestBody EmployeeDto inputRequest) {
+    public ResponseEntity<EmployeeDto> createNewEmployee(@RequestBody @Valid EmployeeDto inputRequest) {
         EmployeeDto employeeDto = employeeService.saveEmployeeDetails(inputRequest);
         return new ResponseEntity<>(employeeDto, HttpStatus.CREATED);
     }
 
     @PutMapping("/{employeeId}")
-    public ResponseEntity<EmployeeDto> updateEmployeeById(@PathVariable(name = "employeeId") Long id, @RequestBody EmployeeDto employeeDto) {
+    public ResponseEntity<EmployeeDto> updateEmployeeById(@PathVariable(name = "employeeId") Long id, @RequestBody @Valid EmployeeDto employeeDto) {
         EmployeeDto employeeDto1 = employeeService.updateEmployeeById(id, employeeDto);
         return ResponseEntity.ok(employeeDto1);
     }
