@@ -1,10 +1,13 @@
 package com.example.springtutorial.springbootweb.dtos;
 
 import com.example.springtutorial.springbootweb.annotations.EmployeeRoleValidation;
+import com.example.springtutorial.springbootweb.annotations.PasswordInputValidation;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import org.hibernate.validator.constraints.CreditCardNumber;
+import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
 
@@ -49,5 +52,15 @@ public class EmployeeDto {
     @AssertTrue(message = "Employee should be active")
     @JsonProperty("isActive")
     private Boolean isActive;
+
+    @NotEmpty(message = "Credit card number is required")
+    @CreditCardNumber(message = "Invalid credit card number")
+    @Size(min = 13, max = 19, message = "Credit card number must be between 13 and 19 digits")
+    private String creditCardNumber;
+
+    @NotBlank(message = "Password shouldn't be blank")
+    @Length(min = 10,max = 14 ,message = "password length should be 10 to 14 characters long")
+    @PasswordInputValidation
+    private String password;
 
 }
