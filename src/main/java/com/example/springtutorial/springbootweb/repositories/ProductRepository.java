@@ -1,6 +1,8 @@
 package com.example.springtutorial.springbootweb.repositories;
 
 import com.example.springtutorial.springbootweb.entities.ProductEntity;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -13,7 +15,13 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity,Long> {
 
-    List<ProductEntity> findByTitle(String title);
+    List<ProductEntity> findByTitleOrderByPrice(String title);
+
+    List<ProductEntity> findByOrderByPrice();
+
+    List<ProductEntity> findBy(Sort sort);
+
+    List<ProductEntity> findAll();
 
     List<ProductEntity> findByCreatedAtAfter(LocalDateTime localDateTime);
 
@@ -30,5 +38,8 @@ public interface ProductRepository extends JpaRepository<ProductEntity,Long> {
 
     @Query("select e from ProductEntity e where e.title=:title and e.quantity=:quantity")
     Optional<ProductEntity> findByTitleAAndQuantity(String title,Integer quantity);
+
+
+    List<ProductEntity> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 
 }
